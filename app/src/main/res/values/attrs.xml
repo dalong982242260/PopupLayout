@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PopupLayout">
+        <attr name="animDuration" format="integer" />
+        <attr name="shadowBackgroundColor" format="color" />
+        <attr name="isAnim" format="boolean" />
+        <attr name="canceledOnTouchOutside" format="boolean" />
+        <attr name="animType">
+            <enum name="bottomTotop" value="0" />
+            <enum name="topTobottom" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

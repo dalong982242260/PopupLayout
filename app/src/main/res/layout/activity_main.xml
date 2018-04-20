@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.dl.popup.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+
+    </LinearLayout>
+
+
+    <com.dl.popup.PopupLayout
+        android:id="@+id/buttomPopup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:animDuration="300"
+        app:animType="topTobottom"
+        app:canceledOnTouchOutside="true"
+        app:isAnim="true">
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@color/colorAccent"
+            android:visibility="visible" />
+
+
+    </com.dl.popup.PopupLayout>
+
+    <TextView
+        android:id="@+id/popup"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:text="popup"
+        android:textColor="#333333"
+        android:textSize="20sp" />
+</RelativeLayout>
