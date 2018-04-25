@@ -6,8 +6,10 @@
         <attr name="isAnim" format="boolean" />
         <attr name="canceledOnTouchOutside" format="boolean" />
         <attr name="animType">
-            <enum name="bottomTotop" value="0" />
-            <enum name="topTobottom" value="1" />
+            <enum name="anim_top" value="0" />
+            <enum name="anim_right" value="1" />
+            <enum name="anim_bottom" value="2" />
+            <enum name="anim_left" value="3" />
         </attr>
     </declare-styleable>
 </resources>

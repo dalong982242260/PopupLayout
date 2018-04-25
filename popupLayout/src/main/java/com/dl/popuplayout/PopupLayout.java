@@ -1,4 +1,4 @@
-package com.dl.popup;
+package com.dl.popuplayout;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +29,7 @@ public class PopupLayout extends RelativeLayout {
     private Animation inAnim, outAnim;
     private boolean isShowing;
     private boolean dismissing;
-    private int animType;
+    private ANIM animType;
     private OnDismissListener onDismissListener;
 
     public PopupLayout(Context context) {
@@ -46,18 +46,30 @@ public class PopupLayout extends RelativeLayout {
         isAnim = typedArray.getBoolean(R.styleable.PopupLayout_isAnim, true);
         canceledOnTouchOutside = typedArray.getBoolean(R.styleable.PopupLayout_canceledOnTouchOutside, true);
         animDuration = typedArray.getInteger(R.styleable.PopupLayout_animDuration, 300);
-        animType = typedArray.getInteger(R.styleable.PopupLayout_animType, 0);
         shadowBackgroundColor = typedArray.getColor(R.styleable.PopupLayout_shadowBackgroundColor, Color.parseColor("#80000000"));
+        int animTypeValue = typedArray.getInteger(R.styleable.PopupLayout_animType, ANIM.BOTTOM.getValue());
+        animType = getAnimType(animTypeValue);
         typedArray.recycle();
         init(context);
     }
 
-    private void init(Context context) {
-        if (animType == 1) {
-            setGravity(Gravity.TOP);
-        } else {
-            setGravity(Gravity.BOTTOM);
+    public ANIM getAnimType(int animTypeValue) {
+        if (animTypeValue == ANIM.LEFT.value) {
+            return ANIM.LEFT;
         }
+        if (animTypeValue == ANIM.RIGHT.value) {
+            return ANIM.RIGHT;
+        }
+        if (animTypeValue == ANIM.TOP.value) {
+            return ANIM.TOP;
+        }
+        if (animTypeValue == ANIM.BOTTOM.value) {
+            return ANIM.BOTTOM;
+        }
+        return ANIM.BOTTOM;
+    }
+
+    private void init(Context context) {
         initAnim();
         setKeyBackCancelable(canceledOnTouchOutside);
         ViewGroup decorView = (ViewGroup) ((Activity) context).getWindow().getDecorView();
@@ -108,24 +120,47 @@ public class PopupLayout extends RelativeLayout {
         }
     }
 
+    public void setAnimType(ANIM animType) {
+        this.animType = animType;
+        initAnim();
+    }
+
+    public ANIM getAnimType() {
+        return animType;
+    }
+
     /**
-     * 初始化动画（显示和隐藏）
+     * init anim（show and hide）
      */
     private void initAnim() {
-        if (animType == 1) {
-            inAnim = getAnimation(R.anim.popup_slide_in_top);
-            outAnim = getAnimation(R.anim.popup_slide_out_top);
-        } else {
-            inAnim = getAnimation(R.anim.popup_slide_in_bottom);
-            outAnim = getAnimation(R.anim.popup_slide_out_bottom);
+        switch (animType) {
+            case TOP:
+                inAnim = getAnimation(R.anim.popup_slide_in_top);
+                outAnim = getAnimation(R.anim.popup_slide_out_top);
+                setGravity(Gravity.TOP);
+                break;
+            case RIGHT:
+                inAnim = getAnimation(R.anim.popup_slide_in_right);
+                outAnim = getAnimation(R.anim.popup_slide_out_right);
+                setGravity(Gravity.RIGHT);
+                break;
+            case BOTTOM:
+                inAnim = getAnimation(R.anim.popup_slide_in_bottom);
+                outAnim = getAnimation(R.anim.popup_slide_out_bottom);
+                setGravity(Gravity.BOTTOM);
+                break;
+            case LEFT:
+                inAnim = getAnimation(R.anim.popup_slide_in_left);
+                outAnim = getAnimation(R.anim.popup_slide_out_left);
+                setGravity(Gravity.LEFT);
+                break;
         }
-
         inAnim.setDuration(animDuration);
         outAnim.setDuration(animDuration);
     }
 
     /**
-     * 显示布局
+     * show view
      */
     public void show() {
         if (isShowing()) {
@@ -161,7 +196,7 @@ public class PopupLayout extends RelativeLayout {
     }
 
     /**
-     * 是否显示
+     * is showing
      *
      * @return
      */
@@ -170,7 +205,7 @@ public class PopupLayout extends RelativeLayout {
     }
 
     /**
-     * 隐藏布局
+     * dismiss view
      */
     public void dismiss() {
         if (dismissing) {
@@ -208,13 +243,12 @@ public class PopupLayout extends RelativeLayout {
     }
 
     /**
-     * 隐藏布局后的一些操作
+     * hide view after do some thing
      */
     public void dismissImmediately() {
         this.post(new Runnable() {
             @Override
             public void run() {
-                //从根视图移除
                 isShowing = false;
                 dismissing = false;
                 contentContainer.setVisibility(GONE);
@@ -227,7 +261,7 @@ public class PopupLayout extends RelativeLayout {
     }
 
     /**
-     * 创建动画
+     * create anim
      *
      * @return
      */
@@ -236,7 +270,7 @@ public class PopupLayout extends RelativeLayout {
     }
 
     /**
-     * 设置按了返回键是否可以取消
+     * setting is can cancel on press keyback
      *
      * @param isCancelable
      */
@@ -251,7 +285,7 @@ public class PopupLayout extends RelativeLayout {
     }
 
     /**
-     * 点击返回键监听
+     * onKeyBackListener
      */
     private View.OnKeyListener onKeyBackListener = new View.OnKeyListener() {
         @Override
@@ -264,7 +298,7 @@ public class PopupLayout extends RelativeLayout {
         }
     };
     /**
-     * 触摸事件监听
+     * onTouchListener
      */
     private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
         @Override
@@ -283,10 +317,21 @@ public class PopupLayout extends RelativeLayout {
         return this;
     }
 
-    /**
-     * 隐藏回调接口
-     */
     public interface OnDismissListener {
         public void onDismiss(Object o);
+    }
+
+    public enum ANIM {
+        TOP(0), RIGHT(1), BOTTOM(2), LEFT(3);
+
+        private int value;
+
+        ANIM(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }
